@@ -1,8 +1,24 @@
 .container {
+  overflow: hidden;
+  height: 100vh;
 }
 
 .content {
+  display: flex;
 }
 
 .item {
+  flex-shrink: 0;
+  width: 80%;
+  margin: 0 10%;
+  padding: 10rem 0;
+  border-radius: 5px;
+  text-align: center;
+  background: rgb(185, 170, 170);
+}
+
+.nav {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-around;
 }
