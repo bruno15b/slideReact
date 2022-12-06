@@ -5,6 +5,16 @@ const Slide = ({ slides }) => {
   const item = React.useRef();
   const [ativo, setAtivo] = React.useState(0);
   const [position, setPosition] = React.useState(0);
+  const [cores] = React.useState(() => {
+    return slides.reduce((arrayAcc) => {
+      const newItem =
+        "#" +
+        parseInt(Math.random() * 0xffffff)
+          .toString(16)
+          .padStart(6, "0");
+      return [...arrayAcc, newItem];
+    }, []);
+  });
 
   React.useEffect(() => {
     const { width } = item.current.getBoundingClientRect();
@@ -27,7 +37,7 @@ const Slide = ({ slides }) => {
     <section className={styles.container}>
       <div ref={item} style={{ transform: `translateX(${-position}px)` }} className={styles.content}>
         {slides.map((slide, index) => (
-          <div key={index} className={styles.item}>
+          <div style={{ background: cores[index] }} key={index} className={styles.item}>
             {slide.text}
           </div>
         ))}
