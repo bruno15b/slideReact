@@ -2,16 +2,39 @@ import React from "react";
 import styles from "./Slide.module.css";
 
 const Slide = ({ slides }) => {
+  const item = React.useRef();
+  const [ativo, setAtivo] = React.useState(0);
+  const [position, setPosition] = React.useState(0);
+
+  React.useEffect(() => {
+    const { width } = item.current.getBoundingClientRect();
+    setPosition(width * ativo);
+  }, [ativo]);
+
+  function slidePrev() {
+    if (ativo > 0) {
+      setAtivo(ativo - 1);
+    }
+  }
+
+  function slideNext() {
+    if (ativo < slides.length - 1) {
+      setAtivo(ativo + 1);
+    }
+  }
+
   return (
     <section className={styles.container}>
-      <div className={styles.content}>
-        {slides.map((slide) => (
-          <div className={styles.item}>{slide.text}</div>
+      <div ref={item} style={{ transform: `translateX(${-position}px)` }} className={styles.content}>
+        {slides.map((slide, index) => (
+          <div key={index} className={styles.item}>
+            {slide.text}
+          </div>
         ))}
       </div>
       <nav className={styles.nav}>
-        <button>Anterior</button>
-        <button>Próximo</button>
+        <button onClick={slidePrev}>Anterior</button>
+        <button onClick={slideNext}>Próximo</button>
       </nav>
     </section>
   );
