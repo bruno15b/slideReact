@@ -45,11 +45,7 @@ const Slide = ({ slides }) => {
 
   function resizeSlide() {
     const margin = +getComputedStyle(itens.current[ativo]).marginLeft.replace("px", "");
-    setPosition(
-      itens.current[ativo].offsetLeft -
-        margin +
-        (window.innerWidth - (itens.current[ativo].offsetWidth + 2 * +getComputedStyle(itens.current[ativo]).marginLeft.replace("px", ""))) / 2
-    );
+    setPosition(-itens.current[ativo].offsetLeft + margin + (window.innerWidth - itens.current[ativo].offsetWidth - 2 * margin) / 2);
   }
 
   useEffect(() => {
