@@ -1,6 +1,9 @@
+body {
+  margin-top: 100px;
+  height: 100vh;
+}
 .container {
   overflow: hidden;
-  height: 100vh;
 }
 
 .content {
@@ -10,7 +13,7 @@
 
 .item {
   flex-shrink: 0;
-  width: 80%;
+  width: 50%;
   margin: 0 10%;
   padding: 10rem 0;
   border-radius: 5px;
