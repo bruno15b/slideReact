@@ -1,12 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styles from "./Slide.module.css";
+import debounce from "./debounce";
 
 const Slide = ({ slides }) => {
-  const corpoSlide = React.useRef();
-  const itens = React.useRef([]);
-  const [ativo, setAtivo] = React.useState(0);
+  const slidesSelec = React.useRef([]);
+  const [slideActive, setSlideActive] = React.useState(0);
   const [position, setPosition] = React.useState();
-  const [cores] = React.useState(() => {
+  const [randomColors] = React.useState(() => {
     return slides.reduce((arrayAcc) => {
       const newItem =
         "#" +
@@ -18,51 +18,48 @@ const Slide = ({ slides }) => {
   });
 
   React.useEffect(() => {
-    const { width } = corpoSlide.current.getBoundingClientRect();
-    setPosition(width * ativo);
-    const margin = +getComputedStyle(itens.current[ativo]).marginLeft.replace("px", "");
-    setPosition(-itens.current[ativo].offsetLeft + margin + (window.innerWidth - itens.current[ativo].offsetWidth - 2 * margin) / 2);
-  }, [ativo]);
+    setPosition(-slidesSelec.current[slideActive].offsetLeft + (window.innerWidth - slidesSelec.current[slideActive].offsetWidth) / 2);
+  }, [slideActive]);
 
   function slidePrev() {
-    if (ativo > 0) {
-      setAtivo(ativo - 1);
+    if (slideActive > 0) {
+      setSlideActive(slideActive - 1);
     }
   }
 
   function slideNext() {
-    if (ativo < slides.length - 1) {
-      setAtivo(ativo + 1);
-    }
-  }
-  function downClick(event) {
-    if (event.clientX > window.innerWidth / 2 && ativo < slides.length - 1) {
-      setAtivo(ativo + 1);
-    } else if (event.clientX <= window.innerWidth / 2 && ativo > 0) {
-      setAtivo(ativo - 1);
+    if (slideActive < slides.length - 1) {
+      setSlideActive(slideActive + 1);
     }
   }
 
   function resizeSlide() {
-    const margin = +getComputedStyle(itens.current[ativo]).marginLeft.replace("px", "");
-    setPosition(-itens.current[ativo].offsetLeft + margin + (window.innerWidth - itens.current[ativo].offsetWidth - 2 * margin) / 2);
+    setPosition(-slidesSelec.current[slideActive].offsetLeft + (window.innerWidth - slidesSelec.current[slideActive].offsetWidth) / 2);
   }
 
-  useEffect(() => {
-    window.addEventListener("resize", resizeSlide);
+  React.useEffect(() => {
+    window.addEventListener("resize", debounce(resizeSlide, 100));
     return () => window.removeEventListener("resize", resizeSlide);
   });
 
+  function clickOnSlides(event) {
+    if (event.clientX > window.innerWidth / 2 && slideActive < slides.length - 1) {
+      setSlideActive(slideActive + 1);
+    } else if (event.clientX <= window.innerWidth / 2 && slideActive > 0) {
+      setSlideActive(slideActive - 1);
+    }
+  }
+
   return (
     <>
-      <section onMouseDown={downClick} className={styles.container}>
-        <div ref={corpoSlide} style={{ transform: `translateX(${position}px)` }} className={styles.content}>
+      <section onClick={clickOnSlides} className={styles.container}>
+        <div style={{ transform: `translateX(${position}px)` }} className={styles.content}>
           {slides.map((slide, index) => (
             <div
               ref={(element) => {
-                itens.current[index] = element;
+                slidesSelec.current[index] = element;
               }}
-              style={{ background: cores[index] }}
+              style={{ background: randomColors[index] }}
               key={index}
               className={styles.item}
             >
